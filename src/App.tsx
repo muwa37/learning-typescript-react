@@ -1,74 +1,65 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import Card, {CardVariant} from './components/Card';
+import React from 'react';
+import {BrowserRouter, NavLink, Route} from 'react-router-dom';
+
+import UsersPage from './components/UsersPage';
+import TodosPage from './components/TodosPage';
+import UserItemPage from './components/UserItemPage';
 import EventsExample from './components/EventsExample';
-import List from './components/List';
-import TodoItem from './components/TodoItem';
-import UserItem from './components/UserItem';
-import UserList from './components/UserList';
-import { ITodo, IUser } from './types/types';
+import Card, {CardVariant} from './components/Card';
 
 const App = () => {
-  const [users, setUsers] = useState<IUser[]>([]);
-  const [todos, setTodos] = useState<ITodo[]>([]);
-
-  useEffect(() => {
-    fetchUsers();
-    fetchTodos();
-  }, []);
-
-  async function fetchUsers() {
-    try {
-      const response = await axios.get<IUser[]>('https://jsonplaceholder.typicode.com/users');
-      setUsers(response.data)
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  async function fetchTodos() {
-    try {
-      const response = await axios.get<ITodo[]>('https://jsonplaceholder.typicode.com/todos?_limit=10');
-      setTodos(response.data)
-    } catch (e) {
-      console.log(e)
-    }
-  }
 
   return (
-    <div className="App">
-      <Card 
-        variant={CardVariant.primary}
-        width='250px'
-        height='250px'
-      >
-        <button>
-          btn
-        </button>
-      </Card>
-
-      <EventsExample/>
-
-      <List
-        items={users}
-        renderItem={(user:IUser) => 
-          < UserItem
-            user={user}
-            key={user.id}
-          />
-        }
-      />
-
-      <List
-        items={todos}
-        renderItem={(todo:ITodo) => 
-          < TodoItem
-            todo={todo}
-            key={todo.id}
-          />
-        }
-      />
-    </div>
+    <BrowserRouter>
+      <div>
+        <div>
+          <NavLink 
+            to='/users'
+            style={{marginRight: 15}}
+          >
+            users
+          </NavLink >
+          <NavLink 
+            to='/todos'
+            style={{marginRight: 15}}
+          >
+            todos
+          </NavLink>
+          <NavLink 
+            to='/evex'
+            style={{marginRight: 15}}
+          >
+            events examples
+          </NavLink>
+          <NavLink 
+            to='/card'
+            style={{marginRight: 15}}
+          >
+            card
+          </NavLink>
+          
+        </div>
+        <Route path={'/users'} exact>
+          <UsersPage/>
+        </Route>
+        <Route path={'/todos'} exact>
+          <TodosPage/>
+        </Route>
+        <Route path={'/users/:id'}>
+          <UserItemPage/>
+        </Route>
+        <Route path={'/evex'} exact>
+          <EventsExample/>
+        </Route>
+        <Route path={'/card'} exact>
+        <Card 
+          variant={CardVariant.primary}
+          width='250px'
+          height='250px'
+        />
+        </Route>
+      </div>
+    </BrowserRouter>
   );
 }
 
